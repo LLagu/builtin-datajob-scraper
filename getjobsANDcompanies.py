@@ -70,28 +70,6 @@ for job in data['jobs']:
         industries3.append(str(job['industry_id'][2]).translate({ord(i): None for i in '[]'}))   
     except:
         industries3.append('')
-    
-    '''link = job['alias']
-    print(link)
-    pageurl = 'https://builtin.com{}'.format(link)
-    print(pageurl)
-    data2 = requests.get(url)
-    pagecontent = data2.content
-    soup=BeautifulSoup(pagecontent,features="html.parser")
-    tech = []
-    for t in soup.findAll('span',attrs={'class': 'full-stack-item'}):
-        tech.append(t.text) 
-    technologies.append(tech)'''
-
-'''print(
-    len(job_titles),
-    len(companies),
-    len(companies),
-    len(job_description),
-    len(levels),
-    len(dates),
-    len(locations)
-)'''
 
 #create and export the dataframe
 df = pd.DataFrame({'position': job_titles,
@@ -139,14 +117,15 @@ c_ids = []
 c_regions = []
 c_titles = []
 
-for elem in c_args:
+flat_list = [x for xs in c_args for x in xs]
+for elem in flat_list:
     ids = str(elem).translate({ord(i): None for i in '[]'})
-    url = 'https://api.builtin.com/companies/frontend/company-details?company_ids={}'.format(elem)
+    
+    url = 'https://api.builtin.com/companies/{}'.format(elem)
     data = requests.get(url).json()
-    for i in data:
-        c_ids.append(i['id'])
-        c_regions.append(i['region_id'])
-        c_titles.append(i['title'])
+    c_ids.append(data['id'])
+    c_regions.append(data['region_id'])
+    c_titles.append(data['title'])
 
 
 dfc = pd.DataFrame(
